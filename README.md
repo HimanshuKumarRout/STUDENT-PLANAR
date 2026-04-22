@@ -54,7 +54,7 @@ To run this project locally, ensure you have **Node.js** (v16+) and **MongoDB** 
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/student-planar.git
+git clone https://github.com/HimanshuKumarRout/student-planar.git
 cd student-planar
 ```
 
@@ -101,6 +101,15 @@ Feel free to check the [issues page](https://github.com/your-username/student-pl
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+
+## 👨‍💻 Author
+
+**Himanshu Kumar Rout**
+
+* GitHub: [https://github.com/HimanshuKumarRout](https://github.com/HimanshuKumarRout)
+* Email: [himanshurout136@gmail.com](mailto:himanshurout136@gmail.com)
+
 
 ## 📝 License
 
