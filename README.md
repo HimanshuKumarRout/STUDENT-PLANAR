@@ -54,7 +54,7 @@ To run this project locally, ensure you have **Node.js** (v16+) and **MongoDB** 
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/student-planar.git
+git clone https://github.com/HimanshuKumarRout/student-planar.git
 cd student-planar
 ```
 
