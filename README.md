@@ -94,7 +94,7 @@ npm run dev
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
-Feel free to check the [issues page](https://github.com/your-username/student-planar/issues) to see what we're working on.
+Feel free to check the [issues page](https://github.com/HimanshuKumarRout/student-planar/issues) to see what we're working on.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
