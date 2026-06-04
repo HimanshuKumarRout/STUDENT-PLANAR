@@ -123,4 +123,28 @@ router.post('/upload-book', upload.single('bookFile'), async (req, res) => {
   }
 });
 
+router.post('/upload-assignment', upload.single('assignmentFile'), async (req, res) => {
+  try {
+    const { studentId, title, course, date, type, typeColor, status, time } = req.body;
+    const fileUrl = req.file ? `/uploads/${req.file.filename}` : '';
+    
+    const newAssignment = new Assignment({
+      studentId,
+      title: title || (req.file ? req.file.originalname.split('.').slice(0, -1).join('.') : 'Untitled Assignment'),
+      course: course || 'Teacher Assigned',
+      date: date || 'TBD',
+      type: type || 'Homework',
+      typeColor: typeColor || 'purple',
+      status: status || 'not-started',
+      time: time || 'Urgent',
+      fileUrl
+    });
+    
+    const saved = await newAssignment.save();
+    res.json(saved);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

@@ -24,6 +24,8 @@ With its modern, futuristic UI and robust scalable backend, Student Planar is de
 
 - 🔐 **Role-Based dashboards:** Dedicated views and permissions for 'Teachers' and 'Students'.
 - 📚 **Course Management:** Teachers can securely create, edit, and assign courses.
+- 📁 **File-Based Assignments:** Teachers assign homework and coursework by uploading files (PDFs, Word docs, images, txt files, etc.).
+- 📥 **Interactive Downloading:** Students can download assignment files directly from their task view with a custom, theme-integrated download interface.
 - 🕒 **Schedule & Task Tracking:** Intuitive daily scheduling, real-time date-restrictions, and calendar syncs.
 - 💅 **Immersive UI:** A rich, responsive UI utilizing dynamic layouts and modern styling constraints.
 - 🛡️ **Secure Authentication:** JWT-based user authentication and robust password hashing.

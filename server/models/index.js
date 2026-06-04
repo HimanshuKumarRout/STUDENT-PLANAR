@@ -45,7 +45,8 @@ const assignmentSchema = new mongoose.Schema({
   type: { type: String },
   typeColor: { type: String, default: 'blue' },
   status: { type: String, enum: ['not-started', 'progress', 'done'], default: 'not-started' },
-  time: { type: String }
+  time: { type: String },
+  fileUrl: { type: String, default: '' }
 });
 const Assignment = mongoose.model('Assignment', assignmentSchema);
 

@@ -74,7 +74,21 @@ export default function AssignmentTracker({ studentId }) {
                   const status = getStatusProps(a.status);
                   return (
                     <tr key={idx}>
-                      <td><strong style={{ textDecoration: a.status === 'done' ? 'line-through' : 'none' }}>✏️ {a.title}</strong></td>
+                      <td>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          <strong style={{ textDecoration: a.status === 'done' ? 'line-through' : 'none' }}>✏️ {a.title}</strong>
+                          {a.fileUrl && (
+                            <a 
+                              href={`http://localhost:5000${a.fileUrl}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="file-download-btn"
+                            >
+                              📥 Download Attachment
+                            </a>
+                          )}
+                        </div>
+                      </td>
                       <td style={{ textDecoration: a.status === 'done' ? 'line-through' : 'none' }}>{a.course}</td>
                       <td>📅 {a.date}</td>
                       <td><span className={`type-tag tag-${a.typeColor}`}>{a.type}</span></td>

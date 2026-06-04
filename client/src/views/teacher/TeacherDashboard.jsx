@@ -7,8 +7,10 @@ export default function TeacherDashboard() {
   const [selectedStudent, setSelectedStudent] = useState(null); // for modal
   const [selectedStudentIds, setSelectedStudentIds] = useState([]);
   const assigningStudentIdRef = useRef(null);
+  const assigningAssignmentStudentIdRef = useRef(null);
   const [isBroadcasting, setIsBroadcasting] = useState(false);
   const fileInputRef = useRef(null);
+  const assignmentFileInputRef = useRef(null);
   const navigate = useNavigate();
 
   const fetchStudents = async () => {
@@ -45,17 +47,9 @@ export default function TeacherDashboard() {
     navigate('/');
   };
 
-  const assignAssignment = async (studentId) => {
-    const title = prompt("Enter assignment title to send to student:");
-    if (!title) return;
-    
-    try {
-      await axios.post('http://localhost:5000/api/assignments', {
-        studentId, title, course: 'Teacher Assigned', type: 'Homework', status: 'not-started', date: 'TBD', time: 'Urgent', typeColor: 'purple'
-      });
-      alert('Assignment dispatched successfully!');
-      fetchStudents();
-    } catch (err) { console.error(err); alert('Failed to assign task'); }
+  const assignAssignment = (studentId) => {
+    assigningAssignmentStudentIdRef.current = studentId;
+    assignmentFileInputRef.current.click();
   };
 
   const assignCourse = async (studentId) => {
@@ -93,21 +87,9 @@ export default function TeacherDashboard() {
   const handleSelectAll = () => setSelectedStudentIds(students.map(s => s._id));
   const handleDeselectAll = () => setSelectedStudentIds([]);
 
-  const broadcastAssignment = async () => {
-    const targets = getTargetStudents();
-    const title = prompt(`ENTER GLOBAL ASSIGNMENT TITLE (will be sent to ${targets.length} students):`);
-    if (!title) return;
-    setIsBroadcasting(true);
-    try {
-      await Promise.all(targets.map(student => 
-        axios.post('http://localhost:5000/api/assignments', {
-          studentId: student._id, title, course: 'Global Broadcast', type: 'Homework', status: 'not-started', date: 'TBD', time: 'Urgent', typeColor: 'purple'
-        })
-      ));
-      alert('Broadcast Successful!');
-      fetchStudents();
-    } catch (err) { alert('Broadcast failed'); }
-    setIsBroadcasting(false);
+  const broadcastAssignment = () => {
+    assigningAssignmentStudentIdRef.current = 'ALL';
+    assignmentFileInputRef.current.click();
   };
 
   const broadcastCourse = async () => {
@@ -211,6 +193,71 @@ export default function TeacherDashboard() {
     e.target.value = null;
   };
 
+  const handleAssignmentFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const defaultTitle = file.name.split('.').slice(0, -1).join('.') || file.name;
+    const title = prompt("Confirm assignment title to send:", defaultTitle);
+    if (!title) {
+      e.target.value = null;
+      return;
+    }
+
+    const targets = getTargetStudents();
+    const assigningId = assigningAssignmentStudentIdRef.current;
+
+    if (assigningId === 'ALL') {
+      setIsBroadcasting(true);
+      try {
+        await Promise.all(targets.map(student => {
+          const formData = new FormData();
+          formData.append('studentId', student._id);
+          formData.append('title', title);
+          formData.append('course', 'Global Broadcast');
+          formData.append('type', 'Homework');
+          formData.append('status', 'not-started');
+          formData.append('date', 'TBD');
+          formData.append('time', 'Urgent');
+          formData.append('typeColor', 'purple');
+          formData.append('assignmentFile', file);
+          return axios.post('http://localhost:5000/api/upload-assignment', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+        }));
+        alert(`Assignment '${title}' Broadcasted Successfully!`);
+        fetchStudents();
+      } catch (err) {
+        console.error("Broadcast Assignment Error:", err.response?.data || err);
+        alert('Broadcast failed: ' + (err.response?.data?.error || err.message));
+      }
+      setIsBroadcasting(false);
+    } else {
+      const formData = new FormData();
+      formData.append('studentId', assigningId);
+      formData.append('title', title);
+      formData.append('course', 'Teacher Assigned');
+      formData.append('type', 'Homework');
+      formData.append('status', 'not-started');
+      formData.append('date', 'TBD');
+      formData.append('time', 'Urgent');
+      formData.append('typeColor', 'purple');
+      formData.append('assignmentFile', file);
+
+      try {
+        await axios.post('http://localhost:5000/api/upload-assignment', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        alert(`Assignment '${title}' assigned successfully!`);
+        fetchStudents();
+      } catch (err) {
+        console.error("Assignment Upload Error:", err.response?.data || err);
+        alert('Failed to assign task: ' + (err.response?.data?.error || err.message));
+      }
+    }
+    e.target.value = null;
+  };
+
   const studentCardStyle = {
     backgroundColor: 'var(--bg-color-secondary)',
     padding: '1.5rem',
@@ -225,6 +272,7 @@ export default function TeacherDashboard() {
   return (
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: 'var(--text-primary)' }}>
       <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{ display: 'none' }} />
+      <input type="file" ref={assignmentFileInputRef} onChange={handleAssignmentFileChange} style={{ display: 'none' }} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontFamily: 'var(--font-serif)', color: 'var(--accent-blue)', letterSpacing: '2px', textShadow: '0 0 10px rgba(0,136,255,0.4)' }}>Teacher Gateway</h1>
         <button className="btn-ghost" onClick={handleLogout} style={{ color: 'var(--accent-red)', borderColor: 'var(--accent-red)' }}>🚪 Terminate Session</button>
